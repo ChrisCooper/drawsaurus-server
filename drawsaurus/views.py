@@ -1,6 +1,11 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from drawsaurus.serializers import UserSerializer, GroupSerializer
+from django.shortcuts import render
+
+
+def interactive(request):
+    return render(request, 'default.html', {})
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -19,7 +24,7 @@ class GroupViewSet(viewsets.ModelViewSet):
     serializer_class = GroupSerializer
 
 
-@api_view(['POST'])
+#@api_view(['POST'])
 def snippet_list(request):
     """
     List all snippets, or create a new snippet.
@@ -37,7 +42,7 @@ def snippet_list(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET', 'PUT', 'DELETE'])
+#@api_view(['GET', 'PUT', 'DELETE'])
 def snippet_detail(request, pk):
     """
     Retrieve, update or delete a snippet instance.
