@@ -2,34 +2,32 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-class TurnSubmission(models.Model):
-    created = models.DateTimeField(auto_now_add=True)
-    turn_number = models.IntegerField()
-    author = models.ForeignKey(User)
-    game = models.ForeignKey('Game')
-
-    DRAWING = 'DR'
-    TYPED_GUESS = 'TY'
-    TURN_TYPE_CHOICES = (
-        (DRAWING, 'Drawing'),
-        (TYPED_GUESS, 'Typed Guess'),
-    )
-    turn_type = models.CharField(max_length=2,
-                                 choices=TURN_TYPE_CHOICES)
-
-    typed_guess = models.CharField(max_length=100)
-    drawing = models.FileField()
-
-    class Meta:
-        ordering = ('turn_number',)
-
-
 class Game(models.Model):
     created = models.DateTimeField(auto_now_add=True)
+    next_turn_number = models.IntegerField(default=0)
 
     class Meta:
         ordering = ('-created',)
 
+
+class TurnSubmission(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    turn_number = models.IntegerField()
+    author = models.ForeignKey(User)
+    game = models.ForeignKey(Game)
+
+    class Meta:
+        ordering = ('turn_number',)
+        abstract=True
+
+
+class DrawingSubmission(TurnSubmission):
+    drawing = models.FileField()
+
+
+class TypedSubmission(TurnSubmission):
+    typed_guess = models.CharField(max_length=100)
+    
 
 class UserProfile(models.Model):
     """
