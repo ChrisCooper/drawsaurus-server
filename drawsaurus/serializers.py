@@ -16,17 +16,10 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'name')
 
 
-class GameSerializer(serializers.Serializer):
-    pk = serializers.IntegerField(read_only=True)
-    created = serializers.DateTimeField(read_only=True)
-    next_turn_number = serializers.IntegerField(read_only=True)
-
-    def create(self, validated_data):
-        return Game.objects.create(**validated_data)
-
-    def update(self, instance, validated_data):
-        print("Warning: Not allowed to update Games")
-        return instance
+class GameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Game
+        fields = ('pk', 'created', 'next_turn_number')
 
 
 class TurnSerializer(serializers.Serializer):
@@ -35,6 +28,10 @@ class TurnSerializer(serializers.Serializer):
     turn_number = serializers.IntegerField(read_only=True)
     #author = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     #game = serializers.PrimaryKeyRelatedField(queryset=Game.objects.all())
+
+    def create(self, validated_data):
+        print("Error: can't create abstract model 'Turn'")
+        return None
 
     def update(self, instance, validated_data):
         print("Warning: Not allowed to update TypedTurns")
@@ -53,3 +50,4 @@ class DrawingTurnSerializer(TurnSerializer):
 
     def create(self, validated_data):
         return DrawingTurn.objects.create(**validated_data)
+
