@@ -76,7 +76,7 @@ def game_detail(request, pk):
         return HttpResponse(status=204)
 
 @csrf_exempt
-def turns_for_game(request, game_pk):
+def typed_turns_for_game(request, game_pk):
     """
     Returns the ordered list of all turns so far in a game.
     """
@@ -86,9 +86,20 @@ def turns_for_game(request, game_pk):
         except Game.DoesNotExist:
             return HttpResponse(status=404)
         typed_turns = TypedTurn.objects.filter(game=game)
-        drawing_turns = DrawingTurn.objects.filter(game=game)
-
         typed_serializer = TypedTurnSerializer(typed_turns, many=True)
-        drawing_serializer = DrawingTurnSerializer(drawing_turns, many=True)
-
         return JSONResponse(typed_serializer.data)
+
+
+@csrf_exempt
+def drawing_turns_for_game(request, game_pk):
+    """
+    Returns the ordered list of all turns so far in a game.
+    """
+    if request.method == 'GET':
+        try:
+            game = Game.objects.get(pk=game_pk)
+        except Game.DoesNotExist:
+            return HttpResponse(status=404)
+        drawing_turns = DrawingTurn.objects.filter(game=game)
+        drawing_serializer = DrawingTurnSerializer(drawing_turns, many=True)
+        return JSONResponse(drawing_serializer.data)
