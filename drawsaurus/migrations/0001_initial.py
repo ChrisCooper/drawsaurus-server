@@ -15,21 +15,21 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='DrawingTurn',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, verbose_name='ID', serialize=False)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('turn_number', models.IntegerField()),
                 ('drawing', models.FileField(upload_to='')),
                 ('author', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
             options={
-                'abstract': False,
                 'ordering': ('turn_number',),
+                'abstract': False,
             },
         ),
         migrations.CreateModel(
             name='Game',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, verbose_name='ID', serialize=False)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('next_turn_number', models.IntegerField(default=0)),
             ],
@@ -40,7 +40,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='TypedTurn',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, verbose_name='ID', serialize=False)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('turn_number', models.IntegerField()),
                 ('typed_guess', models.CharField(max_length=100)),
@@ -48,14 +48,14 @@ class Migration(migrations.Migration):
                 ('game', models.ForeignKey(to='drawsaurus.Game')),
             ],
             options={
-                'abstract': False,
                 'ordering': ('turn_number',),
+                'abstract': False,
             },
         ),
         migrations.CreateModel(
             name='UserProfile',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, verbose_name='ID', serialize=False)),
                 ('reputation', models.IntegerField(default=0)),
                 ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
             ],
