@@ -3,11 +3,12 @@ from rest_framework import viewsets
 from drawsaurus.serializers import UserSerializer, GroupSerializer
 from django.shortcuts import render
 from django.http import HttpResponse
-from rest_framework.renderers import JSONRenderer
 from django.views.decorators.csrf import csrf_exempt
 from drawsaurus.models import Game, TypedTurn, DrawingTurn
 from drawsaurus.serializers import GameSerializer, TypedTurnSerializer, DrawingTurnSerializer
-from rest_framework.parsers import JSONParser
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from rest_framework import status
 
 
 def interactive(request):
@@ -30,16 +31,7 @@ class GroupViewSet(viewsets.ModelViewSet):
     serializer_class = GroupSerializer
 
 
-class JSONResponse(HttpResponse):
-    """
-    An HttpResponse that renders its content into JSON.
-    """
-    def __init__(self, data, **kwargs):
-        content = JSONRenderer().render(data)
-        kwargs['content_type'] = 'application/json'
-        super(JSONResponse, self).__init__(content, **kwargs)
-
-@csrf_exempt
+@api_view(['GET', 'POST'])
 def game_list(request):
     """
     List all games, or create a new game.
@@ -47,17 +39,16 @@ def game_list(request):
     if request.method == 'GET':
         games = Game.objects.all()
         serializer = GameSerializer(games, many=True)
-        return JSONResponse(serializer.data)
+        return Response(serializer.data)
 
     elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = GameSerializer(data=data)
+        serializer = GameSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JSONResponse(serializer.data, status=201)
-        return JSONResponse(serializer.errors, status=400)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@csrf_exempt
+@api_view(['GET', 'DELETE'])
 def game_detail(request, pk):
     """
     Retrieve or delete a game.
@@ -65,17 +56,17 @@ def game_detail(request, pk):
     try:
         game = Game.objects.get(pk=pk)
     except Game.DoesNotExist:
-        return HttpResponse(status=404)
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
         serializer = GameSerializer(game)
-        return JSONResponse(serializer.data)
+        return Response(serializer.data)
 
     elif request.method == 'DELETE':
         game.delete()
-        return HttpResponse(status=204)
+        return HttpResponse(status=status.HTTP_204_NO_CONTENT)
 
-@csrf_exempt
+@api_view(['GET'])
 def typed_turns_for_game(request, game_pk):
     """
     Returns the ordered list of all turns so far in a game.
@@ -84,13 +75,13 @@ def typed_turns_for_game(request, game_pk):
         try:
             game = Game.objects.get(pk=game_pk)
         except Game.DoesNotExist:
-            return HttpResponse(status=404)
+            return Response(status=status.HTTP_404_NOT_FOUND)
         typed_turns = TypedTurn.objects.filter(game=game)
         typed_serializer = TypedTurnSerializer(typed_turns, many=True)
-        return JSONResponse(typed_serializer.data)
+        return Response(typed_serializer.data)
 
 
-@csrf_exempt
+@api_view(['GET'])
 def drawing_turns_for_game(request, game_pk):
     """
     Returns the ordered list of all turns so far in a game.
@@ -99,7 +90,7 @@ def drawing_turns_for_game(request, game_pk):
         try:
             game = Game.objects.get(pk=game_pk)
         except Game.DoesNotExist:
-            return HttpResponse(status=404)
+            return HttpResponse(status=status.HTTP_404_NOT_FOUND)
         drawing_turns = DrawingTurn.objects.filter(game=game)
         drawing_serializer = DrawingTurnSerializer(drawing_turns, many=True)
-        return JSONResponse(drawing_serializer.data)
+        return Response(drawing_serializer.data)
