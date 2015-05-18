@@ -13,37 +13,56 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
+            name='DrawingTurn',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
+                ('created', models.DateTimeField(auto_now_add=True)),
+                ('turn_number', models.IntegerField()),
+                ('drawing', models.FileField(upload_to='')),
+                ('author', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+                'abstract': False,
+                'ordering': ('turn_number',),
+            },
+        ),
+        migrations.CreateModel(
             name='Game',
             fields=[
-                ('id', models.AutoField(auto_created=True, serialize=False, primary_key=True, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
                 ('created', models.DateTimeField(auto_now_add=True)),
+                ('next_turn_number', models.IntegerField(default=0)),
             ],
             options={
                 'ordering': ('-created',),
             },
         ),
         migrations.CreateModel(
-            name='TurnSubmission',
+            name='TypedTurn',
             fields=[
-                ('id', models.AutoField(auto_created=True, serialize=False, primary_key=True, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('turn_number', models.IntegerField()),
-                ('turn_type', models.CharField(choices=[('DR', 'Drawing'), ('TY', 'Typed Guess')], max_length=2)),
                 ('typed_guess', models.CharField(max_length=100)),
-                ('drawing', models.FileField(upload_to='')),
                 ('author', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
                 ('game', models.ForeignKey(to='drawsaurus.Game')),
             ],
             options={
+                'abstract': False,
                 'ordering': ('turn_number',),
             },
         ),
         migrations.CreateModel(
             name='UserProfile',
             fields=[
-                ('id', models.AutoField(auto_created=True, serialize=False, primary_key=True, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
                 ('reputation', models.IntegerField(default=0)),
                 ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
             ],
+        ),
+        migrations.AddField(
+            model_name='drawingturn',
+            name='game',
+            field=models.ForeignKey(to='drawsaurus.Game'),
         ),
     ]

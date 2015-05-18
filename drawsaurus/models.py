@@ -10,7 +10,7 @@ class Game(models.Model):
         ordering = ('-created',)
 
 
-class TurnSubmission(models.Model):
+class Turn(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     turn_number = models.IntegerField()
     author = models.ForeignKey(User)
@@ -21,13 +21,13 @@ class TurnSubmission(models.Model):
         abstract=True
 
 
-class DrawingSubmission(TurnSubmission):
+class DrawingTurn(Turn):
     drawing = models.FileField()
 
 
-class TypedSubmission(TurnSubmission):
+class TypedTurn(Turn):
     typed_guess = models.CharField(max_length=100)
-    
+
 
 class UserProfile(models.Model):
     """

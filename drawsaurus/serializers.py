@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 from django.forms import widgets
-from drawsaurus.models import Game, TurnSubmission, TypedSubmission, DrawingSubmission
+from drawsaurus.models import Game, Turn, TypedTurn, DrawingTurn
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -29,7 +29,7 @@ class GameSerializer(serializers.Serializer):
         return instance
 
 
-class TurnSubmissionSerializer(serializers.Serializer):
+class TurnSerializer(serializers.Serializer):
     pk = serializers.IntegerField(read_only=True)
     created = serializers.DateTimeField(read_only=True)
     turn_number = serializers.IntegerField(read_only=True)
@@ -37,19 +37,19 @@ class TurnSubmissionSerializer(serializers.Serializer):
     #game = serializers.PrimaryKeyRelatedField(queryset=Game.objects.all())
 
     def update(self, instance, validated_data):
-        print("Warning: Not allowed to update TypedSubmissions")
+        print("Warning: Not allowed to update TypedTurns")
         return instance
 
 
-class TypedSubmissionSerializer(TurnSubmissionSerializer):
+class TypedTurnSerializer(TurnSerializer):
     typed_guess = serializers.CharField(max_length=100)
 
     def create(self, validated_data):
-        return TypedSubmission.objects.create(**validated_data)
+        return TypedTurn.objects.create(**validated_data)
 
 
-class DrawingSubmissionSerializer(TurnSubmissionSerializer):
+class DrawingTurnSerializer(TurnSerializer):
     drawing = serializers.FileField()
 
     def create(self, validated_data):
-        return DrawingSubmission.objects.create(**validated_data)
+        return DrawingTurn.objects.create(**validated_data)
