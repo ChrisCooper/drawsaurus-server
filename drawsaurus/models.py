@@ -13,7 +13,7 @@ class Game(models.Model):
 class Turn(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     turn_number = models.IntegerField()
-    author = models.ForeignKey(User)
+    author = models.ForeignKey(User, related_name='turns')
     game = models.ForeignKey(Game)
 
     class Meta:

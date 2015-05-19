@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework import mixins, generics
 
 
 def interactive(request):
@@ -30,43 +31,21 @@ class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
 
-class GameList(APIView):
+
+class GameList(generics.ListCreateAPIView):
     """
     List all games, or create a new game.
     """
-    def get(self, request):
-        games = Game.objects.all()
-        serializer = GameSerializer(games, many=True)
-        return Response(serializer.data)
-
-    def post(self, request, format=None):
-        serializer = GameSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    queryset = Game.objects.all()
+    serializer_class = GameSerializer
 
 
-class GameDetail(APIView):
+class GameDetail(generics.RetrieveDestroyAPIView):
     """
     Retrieve or delete a game.
     """
-    def get_object(self, pk):
-        try:
-            return Game.objects.get(pk=pk)
-        except Game.DoesNotExist:
-            raise Http404
-
-    def get(self, request, pk):
-        game = self.get_object(pk)
-        serializer = GameSerializer(game)
-        return Response(serializer.data)
-
-    def delete(self, pk):
-        game = self.get_object(pk)
-        game.delete()
-        return HttpResponse(status=status.HTTP_204_NO_CONTENT)
-
+    queryset = Game.objects.all()
+    serializer_class = GameSerializer
 
 @api_view(['GET'])
 def typed_turns_for_game(request, game_pk):
