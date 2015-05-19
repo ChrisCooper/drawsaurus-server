@@ -2,13 +2,13 @@ from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from drawsaurus.serializers import UserSerializer, GroupSerializer
 from django.shortcuts import render
-from django.http import HttpResponse
-from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse, Http404
 from drawsaurus.models import Game, TypedTurn, DrawingTurn
 from drawsaurus.serializers import GameSerializer, TypedTurnSerializer, DrawingTurnSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
+from rest_framework.views import APIView
 
 
 def interactive(request):
@@ -30,41 +30,43 @@ class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
 
-
-@api_view(['GET', 'POST'])
-def game_list(request):
+class GameList(APIView):
     """
     List all games, or create a new game.
     """
-    if request.method == 'GET':
+    def get(self, request):
         games = Game.objects.all()
         serializer = GameSerializer(games, many=True)
         return Response(serializer.data)
 
-    elif request.method == 'POST':
+    def post(self, request, format=None):
         serializer = GameSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET', 'DELETE'])
-def game_detail(request, pk):
+
+class GameDetail(APIView):
     """
     Retrieve or delete a game.
     """
-    try:
-        game = Game.objects.get(pk=pk)
-    except Game.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+    def get_object(self, pk):
+        try:
+            return Game.objects.get(pk=pk)
+        except Game.DoesNotExist:
+            raise Http404
 
-    if request.method == 'GET':
+    def get(self, request, pk):
+        game = self.get_object(pk)
         serializer = GameSerializer(game)
         return Response(serializer.data)
 
-    elif request.method == 'DELETE':
+    def delete(self, pk):
+        game = self.get_object(pk)
         game.delete()
         return HttpResponse(status=status.HTTP_204_NO_CONTENT)
+
 
 @api_view(['GET'])
 def typed_turns_for_game(request, game_pk):
@@ -94,3 +96,4 @@ def drawing_turns_for_game(request, game_pk):
         drawing_turns = DrawingTurn.objects.filter(game=game)
         drawing_serializer = DrawingTurnSerializer(drawing_turns, many=True)
         return Response(drawing_serializer.data)
+
