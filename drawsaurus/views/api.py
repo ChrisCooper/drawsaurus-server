@@ -12,10 +12,6 @@ from rest_framework.views import APIView
 from rest_framework import mixins, generics
 
 
-def interactive(request):
-    return render(request, 'default.html', {})
-
-
 class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.

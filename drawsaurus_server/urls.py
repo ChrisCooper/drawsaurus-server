@@ -15,23 +15,13 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from rest_framework import routers
-import drawsaurus.views
-import drawsaurus.urls
 
-
-router = routers.DefaultRouter()
-router.register(r'users', drawsaurus.views.UserViewSet)
-router.register(r'groups', drawsaurus.views.GroupViewSet)
-
+from drawsaurus.urls import api as drawsaurus_api_urls
+from drawsaurus.urls import interactive as drawsaurus_interactive_urls
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^interactive', drawsaurus.views.interactive),
 
-    url(r'^', include(router.urls)),
-    url(r'^', include(drawsaurus.urls)),
-
-    # For browsable API
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^api/', include(drawsaurus_api_urls)),
+    url(r'^', include(drawsaurus_interactive_urls)),
 ]

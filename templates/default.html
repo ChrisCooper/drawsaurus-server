@@ -11,12 +11,13 @@
         <script src="{% static "drawsaurus/js/jquery-2.1.3.min.js" %}"></script>
         <script src="{% static "drawsaurus/js/react-0.13.3.js" %}"></script>
         <script src="{% static "drawsaurus/js/JSXTransformer-0.13.3.js" %}"></script>
-
     </head>
     <body>
 
         <div id="content"></div>
 
-        <script type="text/jsx" src="{% static "drawsaurus/js/main.js" %}"></script>
+        {% block body_end_js %}
+        {% endblock %}
+
     </body>
 </html>

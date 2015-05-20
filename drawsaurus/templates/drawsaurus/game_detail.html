@@ -1,0 +1,8 @@
+{% extends 'drawsaurus/default_react.html' %}
+
+{% block js_start %}
+React.render(
+    <GameDetail url="/api/games/{{ game_pk }}/" />,
+    document.getElementById('content')
+);
+{% endblock %}
