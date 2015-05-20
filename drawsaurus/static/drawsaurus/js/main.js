@@ -1,19 +1,20 @@
 console.log("Entered");
 
-var UserBox = React.createClass({
+
+var GameList = React.createClass({
     componentDidMount: function () {
-        this.loadUsersFromServer();
+        this.loadGamesFromServer();
     },
     getInitialState: function () {
-        return {users: []};
+        return {games: []};
     },
-    loadUsersFromServer: function () {
+    loadGamesFromServer: function () {
         $.ajax({
             url: this.props.url,
             dataType: 'json',
             cache: false,
             success: function (data) {
-                this.setState({users: data.results});
+                this.setState({games: data.results});
                 console.log(this.state);
             }.bind(this),
             error: function (xhr, status, err) {
@@ -22,40 +23,30 @@ var UserBox = React.createClass({
         });
     },
     render: function () {
-        return (
-            <div className="usersBox">
-                <h1>Users</h1>
-                <UserList users={this.state.users} />
-            </div>
-        );
-    }
-});
-
-var UserList = React.createClass({
-    render: function () {
-        console.log(this.props.users);
-        var userNodes = this.props.users.map(function (user) {
+        var gameNodes = this.state.games.map(function (game) {
             return (
-                <User data={user}>
-                </User>
+                <GameOverview data={game}>
+                </GameOverview>
             );
         });
         return (
-            <div className="userList">
-                {userNodes}
+            <div className="gameList">
+                {gameNodes}
             </div>
         );
     }
 });
 
-var User = React.createClass({
+
+var GameOverview = React.createClass({
     render: function () {
         return (
-            <div className="user">
-                <h2 className="userName">
-                    {this.props.data.username}
+            <div className="gameOverview">
+                <h2 className="gamePK">
+                    Game ID {this.props.data.pk}
                 </h2>
-                <span>{this.props.data.email}</span>
+                <span>Next turn</span>
+                <span>{this.props.data.next_turn_number}</span>
             </div>
         );
     }
@@ -64,7 +55,7 @@ var User = React.createClass({
 console.log("Starting");
 
 React.render(
-    <UserBox url="/users/?format=json" />,
+    <GameList url="/games/" />,
     document.getElementById('content')
 );
 
