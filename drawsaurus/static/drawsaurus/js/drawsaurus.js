@@ -36,10 +36,12 @@ var GameList = React.createClass({
 
 var GameOverview = React.createClass({
     render: function () {
+        // TODO: get the url using hyperlinked pks
+        var url = "/games/"+this.props.data.pk+"/";
         return (
             <div className="gameOverview">
                 <h2 className="gamePK">
-                    Game ID {this.props.data.pk}
+                    <a href={url}>Game ID {this.props.data.pk}</a>
                 </h2>
                 <span>Next turn </span>
                 <span>{this.props.data.next_turn_number}</span>
