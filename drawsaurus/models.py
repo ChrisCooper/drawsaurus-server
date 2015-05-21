@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 
 class Game(models.Model):
     created = models.DateTimeField(auto_now_add=True)
-    next_turn_number = models.IntegerField(default=0)
 
     class Meta:
         ordering = ('-created',)

@@ -1,9 +1,26 @@
 [
 {
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "last_login": null,
+    "date_joined": "2015-05-21T00:02:30.492Z",
+    "is_superuser": true,
+    "email": "chris@quixotic-chris.com",
+    "password": "pbkdf2_sha256$20000$J2e9Et3R8WUe$OZvSlKDlFtzrKivthN3OnidzcgI3ImQIHuc1WqhfWDs=",
+    "is_staff": true,
+    "last_name": "",
+    "user_permissions": [],
+    "username": "chris",
+    "first_name": "",
+    "groups": [],
+    "is_active": true
+  }
+},
+{
   "model": "drawsaurus.game",
   "pk": 1,
   "fields": {
-    "next_turn_number": 0,
     "created": "2015-05-18T21:10:54.760Z"
   }
 },
@@ -49,6 +66,31 @@
     "created": "2015-05-18T21:15:55.194Z",
     "game": 1,
     "typed_guess": "A monster fish attacks some dogs"
+  }
+},
+{
+  "model": "drawsaurus.game",
+  "pk": 2,
+  "fields": {
+    "created": "2015-05-18T21:10:54.760Z"
+  }
+},
+{
+  "model": "drawsaurus.game",
+  "pk": 3,
+  "fields": {
+    "created": "2015-05-18T21:10:54.760Z"
+  }
+},
+{
+  "model": "drawsaurus.typedturn",
+  "pk": 3,
+  "fields": {
+    "turn_number": 0,
+    "author": 1,
+    "created": "2015-05-18T21:15:55.194Z",
+    "game": 2,
+    "typed_guess": "Spiderman tries to buy shampoo but trips"
   }
 }
 ]

@@ -44,7 +44,7 @@ var GameOverview = React.createClass({
                     <a href={url}>Game ID {this.props.data.pk}</a>
                 </h2>
                 <span>Next turn </span>
-                <span>{this.props.data.next_turn_number}</span>
+                <span>unknown</span>
             </div>
         );
     }
@@ -72,12 +72,12 @@ var GameDetail = React.createClass({
     },
     render: function () {
         return (
-            <div className="gameDetailw">
+            <div className="gameDetail">
                 <h2 className="gamePK">
                     Game ID {this.state.pk}
                 </h2>
                 <span>Next turn </span>
-                <span>{this.state.next_turn_number}</span>
+                <span>unknown</span>
             </div>
         );
     }

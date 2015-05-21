@@ -19,7 +19,7 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 class GameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Game
-        fields = ('pk', 'created', 'next_turn_number')
+        fields = ('pk', 'created')
 
 
 class TurnSerializer(serializers.Serializer):
